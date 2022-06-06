@@ -1,0 +1,84 @@
+{
+    "name": "chiron/app",
+    "description": "Chiron Application Example",
+    "license": "MIT",
+    "type": "project",
+    "keywords": [
+        "chiron",
+        "framework",
+        "skeleton",
+        "application",
+        "app"
+    ],
+    "homepage": "https://github.com/ncou/app",
+    "require": {
+        "php": "^8.0 || ^8.1",
+        "chiron/chiron": "^3.9",
+        "chiron/debug": "^1.0",
+        "chiron/fastroute-bridge": "^1.0",
+        "chiron/logger": "^0.2",
+        "chiron/response-creator": "^1.0",
+        "chiron/sapi": "^1.0",
+        "chiron/translator": "^1.0",
+        "chiron/view": "^1.0",
+        "chiron/webserver": "^1.0",
+        "foxy/foxy": "^1.2",
+        "nyholm/psr7": "^1.5",
+        "vlucas/phpdotenv": "^5.0"
+    },
+    "require-dev": {
+        "chiron/devtools": "^1.0",
+        "chiron/testing": "^1.0"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "captainhook/plugin-composer": true,
+            "chiron/devtools": true,
+            "composer/package-versions-deprecated": true,
+            "dealerdirect/phpcodesniffer-composer-installer": true,
+            "ergebnis/composer-normalize": true,
+            "phpstan/extension-installer": true,
+            "foxy/foxy": true
+        },
+        "process-timeout": 0,
+        "sort-packages": true
+    },
+    "extra": {
+        "captainhook": {
+            "force-install": true
+        },
+        "chiron/devtools": {
+            "command-prefix": "dev"
+        },
+        "ramsey/conventional-commits": {
+            "configFile": "conventional-commits.json"
+        }
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "@install-app"
+        ],
+        "post-update-cmd": [
+            "@install-app"
+        ],
+        "post-create-project-cmd": [
+            "@install-app"
+        ],
+        "install-app": [
+            "App\\Installer::install"
+        ],
+        "serve": "./bin/chiron serve"
+    }
+}

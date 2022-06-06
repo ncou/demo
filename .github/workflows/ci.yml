@@ -1,0 +1,100 @@
+name: CI
+
+on: ["pull_request", "push"]
+
+jobs:
+  lint:
+    name: Linters
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Lint YAML files
+        uses: ibiqlik/action-yamllint@v3
+
+  tests:
+    name: PHP ${{ matrix.php }}-${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+          - windows-latest
+
+        php:
+          - "8.0"
+          - "8.1"
+
+      fail-fast: false
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          ini-values: date.timezone='UTC'
+          extensions: mbstring, intl
+          coverage: pcov
+          tools: composer:v2
+
+      - name: "Validate composer.json and composer.lock"
+        run: "composer validate --strict"
+
+      - name: Install dependencies (Composer)
+        uses: ramsey/composer-install@v2
+
+      - name: Run tests with phpunit
+        run: vendor/bin/phpunit --colors=always
+
+      - name: Run tests with phpunit and coverage on Linux php 8.0
+        if: matrix.os == 'ubuntu-latest' && matrix.php == '8.0'
+        run: vendor/bin/phpunit --coverage-clover=coverage.clover
+
+      - name: Send code coverage report to Codecov.io
+        if: matrix.os == 'ubuntu-latest' && matrix.php == '8.0'
+        uses: codecov/codecov-action@v2
+
+  coding-standard:
+    name: Coding Standard
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+          extensions: mbstring, intl
+          coverage: none
+
+      - name: Install dependencies (Composer)
+        uses: ramsey/composer-install@v2
+
+      - name: Run PHP CodeSniffer & PHP Parallel
+        run: composer lint
+
+  static-analysis:
+    name: Static Analysis
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+          extensions: mbstring, intl
+          coverage: none
+
+      - name: Install dependencies (Composer)
+        uses: ramsey/composer-install@v2
+
+      - name: Run phpstan & psalm
+        run: composer analyze

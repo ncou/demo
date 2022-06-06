@@ -1,0 +1,30 @@
+/vendor/
+composer.lock
+/.build/
+/runtime/
+.env
+/node_modules
+/public/hot
+/public/mix-manifest.json
+npm-debug.log
+yarn-error.log
+
+# Tool specific files #
+#######################
+# vim
+*~
+*.swp
+*.swo
+# sublime text & textmate
+*.sublime-*
+*.stTheme.cache
+*.tmlanguage.cache
+*.tmPreferences.cache
+# Eclipse
+.settings/*
+# JetBrains, aka PHPStorm, IntelliJ IDEA
+.idea/*
+# NetBeans
+nbproject/*
+# Visual Studio Code
+.vscode
